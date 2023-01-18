@@ -15,6 +15,7 @@
    <body>
       <div id="app">
          <h1>Woohoo! Your order is complete 🎉</h1>
+         <p>Cost $ <span  class="cost"></span> <span  class="currency"></span></p>
          <p>Transaction ID: <span  class="transactionID"></span></p>
          <img
             class="item small"
@@ -26,8 +27,12 @@
       <script type="text/javascript">
          var url = new URL(window.location.href);
          var transactionElem = document.getElementsByClassName("transactionID")
+         var costElem = document.getElementsByClassName("cost")
+         var currencyElem = document.getElementsByClassName("currency")
          if (transactionElem.length) {
             transactionElem[0].innerText = url.searchParams.get("transaction");
+            costElem[0].innerText = url.searchParams.get("cost");
+            currencyElem[0].innerText = url.searchParams.get("currency");
          }
       </script>
    </body>
