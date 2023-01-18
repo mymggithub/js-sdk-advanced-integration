@@ -15,6 +15,7 @@
    <body>
       <div id="app">
          <h1>Woohoo! Your order is complete 🎉</h1>
+         <p>Transaction ID: <span  class="transactionID"></span></p>
          <img
             class="item small"
             src="src/img/celebrate.jpeg"
@@ -22,5 +23,12 @@
             />
          <span class="caption">Photo by <a href="https://unsplash.com/@jdent?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Jason Dent</a> on <a href="https://unsplash.com/s/photos/celebrate?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
       </div>
+      <script type="text/javascript">
+         var url = new URL(window.location.href);
+         var transactionElem = document.getElementsByClassName("transactionID")
+         if (transactionElem.length) {
+            transactionElem[0].innerText = url.searchParams.get("transaction");
+         }
+      </script>
    </body>
 </html>

@@ -1,15 +1,18 @@
+require('dotenv/config');
 const express = require("express");
 const app = express();
 const axios = require("axios");
 const fs = require("fs");
 const util = require("util");
 
+app.use(express.json());
+
 const PORT = 3000;
 
 // @TODO Login to developer.paypal.com, create (or select an existing)
-// developer application, and copy your client ID and secret here
-const CLIENT_ID = "PASTE_YOUR_CLIENT_ID_HERE";
-const SECRET = "PASTE_YOUR_SECRET_HERE";
+// developer application, and copy your client ID and secret in the .evn file
+const CLIENT_ID = process.env.CLIENT_ID
+const SECRET = process.env.APP_SECRET
 
 const readFile = util.promisify(fs.readFile);
 
@@ -79,6 +82,25 @@ app.get("/", async (req, res) => {
 app.post("/create-order", async (req, res) => {
   try {
     const { access_token } = await getAccessToken();
+    let shipping_var = {};
+
+    try {
+      const { addr } = req.body;
+      shipping_var = {
+        address: {
+          address_line_1: addr.streetAddress,
+          address_line_2: addr.extAddress,
+          admin_area_1: addr.state,
+          admin_area_2: addr.city,
+          postal_code: addr.zip,
+          country_code: addr.countryCodeAlpha2
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+    
 
     // For more details on /v2/checkout/orders,
     // see https://developer.paypal.com/docs/api/orders/v2/#orders_create
@@ -96,7 +118,8 @@ app.post("/create-order", async (req, res) => {
             amount: {
               currency_code: "USD",
               value: "1.00"
-            }
+            },
+            shipping: shipping_var
           }
         ]
       }

@@ -119,6 +119,17 @@
          <br>
          <div align="center"> or </div>
 
+          <label class="hosted-fields--label" for="card-holder-name">Name on Card</label>
+          <input 
+            type="text"
+            id="card-holder-name" 
+            name="card-holder-name"
+            class="hosted-field"
+            autocomplete="off"
+            placeholder="card holder name"
+            value="John Doe"
+          />
+
           <label class="hosted-fields--label" for="card-number">Card Number</label>
           <div id="card-number" class="hosted-field"></div>
 
@@ -127,7 +138,74 @@
 
           <label class="hosted-fields--label" for="cvv">CVV</label>
           <div id="cvv" class="hosted-field"></div>
-
+        <div>
+          <label for="shipping-address-street">Shipping Address</label>
+          <input
+            type="text"
+            id="shipping-address-street"
+            name="shipping-address-street"
+            class="hosted-field"
+            autocomplete="off"
+            placeholder="street address"
+            value="Main St"
+          />
+        </div>
+        <div>
+          <label for="shipping-address-unit">&nbsp;</label>
+          <input
+            type="text"
+            id="shipping-address-unit"
+            name="shipping-address-unit"
+            class="hosted-field"
+            autocomplete="off"
+            placeholder="unit"
+            value="123"
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            id="shipping-address-city"
+            name="shipping-address-city"
+            class="hosted-field"
+            autocomplete="off"
+            placeholder="city"
+            value="San Jose"
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            id="shipping-address-state"
+            name="shipping-address-state"
+            class="hosted-field"
+            autocomplete="off"
+            placeholder="state"
+            value="California"
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            id="shipping-address-zip"
+            name="shipping-address-zip"
+            class="hosted-field"
+            autocomplete="off"
+            placeholder="zip / postal code"
+            value="95125"
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            id="shipping-address-country"
+            name="shipping-address-country"
+            class="hosted-field"
+            autocomplete="off"
+            placeholder="country code"
+            value="US"
+          />
+        </div>
          <br><br>
          <div class="button-container">
            <input type="submit" class="button button--small button--green" value="Pay" id="submit"/>
@@ -146,15 +224,25 @@
         createOrder: function(data, actions) {
            return actions.order.create({
              purchase_units: [{
-               amount: {
-                 value: "1.00"
-               }
+                amount: {
+                  value: "1.00"
+                },
+                // shipping:{
+                //   address: {
+                //     address_line_1: document.getElementById("shipping-address-street").value,
+                //     address_line_2: document.getElementById("shipping-address-unit").value,
+                //     admin_area_1: document.getElementById("shipping-address-state").value,
+                //     admin_area_2: document.getElementById("shipping-address-city").value,
+                //     postal_code: document.getElementById("shipping-address-zip").value,
+                //     country_code: document.getElementById("shipping-address-country").value
+                //   }
+                // }
              }]
            });
          },
          onApprove: function(data, actions) {
            return actions.order.capture().then(function(details) {
-             window.location.href = '/success.html';
+             window.location.href = '/success.html?transaction='+details.purchase_units[0].payments.captures[0].id;
            });
          }
      }).render("#paypal-button-container");
@@ -188,7 +276,22 @@
            }
          },
          createOrder: async function () {
-            const res = await fetch("/create-order", { method: 'POST' });
+            const res = await fetch("/create-order", { 
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                addr: {
+                  streetAddress: document.getElementById("shipping-address-street").value,
+                  extAddress: document.getElementById("shipping-address-unit").value,
+                  state: document.getElementById("shipping-address-state").value,
+                  city: document.getElementById("shipping-address-city").value,
+                  zip: document.getElementById("shipping-address-zip").value,
+                  countryCodeAlpha2: document.getElementById("shipping-address-country").value,
+                }
+              })
+            });
             const { id } = await res.json();
             orderId = id;
             return id;
@@ -199,10 +302,9 @@
 
             hostedFields.submit().then(async () => {
               const res = await fetch(`/capture-order/${orderId}`, { method: 'POST' });
-              const { status } = await res.json();
-
+              const { status, purchase_units } = await res.json();
               if (status === 'COMPLETED') {
-                window.location.href = '/success.html';
+                window.location.href = '/success.html?transaction='+purchase_units[0].payments.captures[0].id;
               } else {
                 alert('Funds could not be captured. Try again!');
               }

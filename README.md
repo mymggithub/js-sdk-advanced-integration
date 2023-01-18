@@ -9,7 +9,7 @@ This example follows the [PayPal JS SDK Advanced Integration](https://developer.
 ### Running the example locally
 
 1. Clone the repo `git clone git@github.com:paypal-examples/js-sdk-advanced-integration.git`
-2. Run `npm install`
+2. Run `npm install --no-bin-links`
 3. Run `npm start`
 4. Navigate to `http://127.0.0.1:3000/`
 
@@ -17,3 +17,4 @@ This example follows the [PayPal JS SDK Advanced Integration](https://developer.
 
 1. Advanced Integration: https://developer.paypal.com/docs/business/checkout/advanced-card-payments/
 2. JavaScript SDK reference: https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/
+3. Advanced Integration Youtube Video: https://www.youtube.com/watch?v=rMZ5dUXShfE
