@@ -2,7 +2,7 @@
 
 This example follows the [PayPal JS SDK Advanced Integration](https://developer.paypal.com/docs/business/checkout/advanced-card-payments/) guide, which allows more advanced capabilities and customization. With Advanced, you are able to offer PayPal Checkout buttons and a credit card form that you can customize to match your company's branding.
 
-### Example
+### Example - ([hosted version](https://elated-bee-leather-jacket.cyclic.app/))
 
 ![image](https://user-images.githubusercontent.com/742884/95763984-70511100-0c75-11eb-9b3d-9280d49a6a53.png)
 
